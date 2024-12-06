@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interest Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="splash-screen">
+        <div id="animation-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <h1 id="app-name">💰 My App</h1>
+        </div>
+    </div>
+ 
+    <div id="calculator" class="fade-in">
+        
+        <h1 data-lang="title">Interest Calculator</h1>
+
+        <label for="principal" data-lang="principal">Principal Amount (₹):</label>
+        <input type="number" id="principal" placeholder="Enter principal amount">
+
+        <label for="rate" data-lang="rate">Rate of Interest (% per annum):</label>
+        <input type="number" id="rate" placeholder="Enter rate of interest">
+
+        <label for="timeInYears" data-lang="timeYears">Time (in years):</label>
+        <input type="number" id="timeInYears" placeholder="Enter time in years">
+
+        <label for="timeInMonths" data-lang="timeMonths">OR Time (in months):</label>
+        <input type="number" id="timeInMonths" placeholder="Enter time in months">
+
+        <label for="timeInDays" data-lang="timeDays">OR Time (in days):</label>
+        <input type="number" id="timeInDays" placeholder="Enter time in days">
+
+        <label for="compound" data-lang="compound">Compound Interest?</label>
+        <input type="checkbox" id="compound">
+
+        <button onclick="calculateInterest()" data-lang="calculate">Calculate Interest</button>
+
+        <div id="result" class="result-box">
+            <h2 data-lang="resultsTitle">Results:</h2>
+            <p id="interest" data-lang="interestResult">Interest: ₹0</p>
+            <p id="totalAmount" data-lang="totalResult">Total Amount: ₹0</p>
+        </div>
+
+        <button id="languageToggle" onclick="toggleLanguage()" data-lang="toggleButton">Switch to Hindi</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+      
+const translations = {
+    en: {
+        title: "Interest Calculator",
+        principal: "Principal Amount (₹):",
+        rate: "Rate of Interest (% per annum):",
+        timeYears: "Time (in years):",
+        timeMonths: "OR Time (in months):",
+        timeDays: "OR Time (in days):",
+        compound: "Compound Interest?",
+        calculate: "Calculate Interest",
+        resultsTitle: "Results:",
+        interestResult: "Interest:",
+        totalResult: "Total Amount:",
+        toggleButton: "Switch to Hindi",
+    },
+    hi: {
+        title: "ब्याज कैलकुलेटर",
+        principal: "मुख्य राशि (₹):",
+        rate: "ब्याज दर (% प्रति वर्ष):",
+        timeYears: "समय (वर्षों में):",
+        timeMonths: "या समय (महीनों में):",
+        timeDays: "या समय (दिनों में):",
+        compound: "चक्रवृद्धि ब्याज?",
+        calculate: "ब्याज की गणना करें",
+        resultsTitle: "परिणाम:",
+        interestResult: "ब्याज:",
+        totalResult: "कुल राशि:",
+        toggleButton: "Switch to English",
+    },
+};
+
+// Current language state
+let currentLanguage = "en";
+
+// Function to toggle the language
+function toggleLanguage() {
+    currentLanguage = currentLanguage === "en" ? "hi" : "en";
+
+    // Update all text elements
+    document.querySelectorAll("[data-lang]").forEach((element) => {
+        const key = element.getAttribute("data-lang");
+        element.textContent = translations[currentLanguage][key];
+    });
+
+    // Update button text
+    document.getElementById("languageToggle").textContent = translations[currentLanguage].toggleButton;
+}
+
+// Function to calculate interest
+function calculateInterest() {
+    const principal = parseFloat(document.getElementById("principal").value);
+    const rate = parseFloat(document.getElementById("rate").value);
+    const timeInYears = parseFloat(document.getElementById("timeInYears").value) || 0;
+    const timeInMonths = parseFloat(document.getElementById("timeInMonths").value) || 0;
+    const timeInDays = parseFloat(document.getElementById("timeInDays").value) || 0;
+    const isCompound = document.getElementById("compound").checked;
+
+    if (isNaN(principal) || isNaN(rate) || (timeInYears === 0 && timeInMonths === 0 && timeInDays === 0)) {
+        alert("Please enter valid inputs!");
+        return;
+    }
+
+    const totalTimeInYears = timeInYears + timeInMonths / 12 + timeInDays / 365;
+    let interest, totalAmount;
+
+    if (isCompound) {
+        totalAmount = principal * Math.pow(1 + rate / 100, totalTimeInYears);
+        interest = totalAmount - principal;
+    } else {
+        interest = (principal * rate * totalTimeInYears) / 100;
+        totalAmount = principal + interest;
+    }
+
+    document.getElementById("interest").textContent = `${translations[currentLanguage].interestResult} ₹${interest.toFixed(2)}`;
+    document.getElementById("totalAmount").textContent = `${translations[currentLanguage].totalResult} ₹${totalAmount.toFixed(2)}`;
+}
+
+    </script>
+</body>
+</html>
